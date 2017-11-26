@@ -7,6 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by kevin on 11/20/17.
  * This class will wrap calls to sqlite database to simplify database usage
+ * 
  */
 
 public class DBAccess {
