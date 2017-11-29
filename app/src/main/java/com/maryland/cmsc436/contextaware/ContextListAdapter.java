@@ -26,28 +26,24 @@ public class ContextListAdapter extends BaseAdapter {
 
     // Add a new context to the adapter
     // Notify observers that the data set has changed
-
     public void add(ContextSettings newContext) {
         contexts.add(newContext);
         notifyDataSetChanged();
     }
 
     // Clears the list adapter of all contexts.
-
     public void clear() {
         contexts.clear();
         notifyDataSetChanged();
     }
 
     // Returns the number of contexts
-
     @Override
     public int getCount() {
         return contexts.size();
     }
 
     // Retrieve the number of contexts
-
     @Override
     public Object getItem(int pos) {
         return contexts.get(pos);
@@ -55,7 +51,6 @@ public class ContextListAdapter extends BaseAdapter {
 
     // Get the ID for the context
     // In this case it's just the position
-
     @Override
     public long getItemId(int pos) {
         return pos;
@@ -64,9 +59,9 @@ public class ContextListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // Sami's Code
-        // First I will ge the ToDoITem at the specified position
+        // First I will ge the context at the specified position
         final ContextSettings currentContext = (ContextSettings) getItem(position);
+
         View dataView = convertView;
         LayoutInflater mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // check for recycled view
@@ -88,11 +83,10 @@ public class ContextListAdapter extends BaseAdapter {
             dataView.setTag(myViewHolder);
         }
 
-
         ViewHolder storedViewHolder = (ViewHolder) dataView.getTag();
         // set the data in the data View
 
-        storedViewHolder.ringerView.setText(currentContext.getRinger().toString());
+        storedViewHolder.ringerView.setText("Ringer setting: " + currentContext.getRinger().toString());
         storedViewHolder.titleView.setText(currentContext.getTitle());
         storedViewHolder.statusView.setChecked(currentContext.getStatus() == ContextSettings.ActiveStatus.YES);
         storedViewHolder.statusView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -109,7 +103,6 @@ public class ContextListAdapter extends BaseAdapter {
             }
         });
         return dataView;
-
     }
 
     static class ViewHolder {
@@ -118,5 +111,6 @@ public class ContextListAdapter extends BaseAdapter {
         TextView titleView;
         CheckBox statusView;
         TextView ringerView;
+        TextView locationView;
     }
 }

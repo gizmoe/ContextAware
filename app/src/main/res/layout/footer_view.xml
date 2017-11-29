@@ -7,5 +7,4 @@
     android:text="@string/add_new_context_string"
     android:textSize="24sp"
     android:background="@color/Green">
-
 </TextView>

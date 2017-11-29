@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends ListActivity {
@@ -36,19 +37,18 @@ public class MainActivity extends ListActivity {
             public void onClick(View view) {
                 Log.i(TAG, "entered the onClickListener for FooterView");
 
-				/*
-				 Here I will create an intent so that I can start my AddNewContext activity if the
-				 FooterView is clicked.
-				  */
+
+				 //Here I will create an intent so that I can start my AddNewContext activity if the
+				 //FooterView is clicked.
+
                 Intent addNewContextIntent = new Intent(getApplicationContext(),AddNewContext.class);
-				/*
-				 I will use StartActivityForResult rather than startActivity so that I can pass it
-				 in the proper requestCode.
-				  */
+
+				 //I will use StartActivityForResult rather than startActivity so that I can pass it
+				 //in the proper requestCode.
+
                 startActivityForResult(addNewContextIntent, ADD_CONTEXT_REQUEST);
             }
         });
-
         // This will attach the adapter to this ListActivity's ListView
         setListAdapter(contextAdapter);
     }
@@ -60,6 +60,8 @@ public class MainActivity extends ListActivity {
 
         // Here I will check that the requestCode and the resultCode are what they should be
         if (requestCode == ADD_CONTEXT_REQUEST && resultCode == RESULT_OK) {
+
+            Toast.makeText(getApplicationContext(),"Context Created",Toast.LENGTH_LONG).show();
 
             // Create the context from the data Intent
             ContextSettings newContext = new ContextSettings(data);
