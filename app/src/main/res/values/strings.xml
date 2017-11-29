@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ContextAware</string>
+    <string name="app_name">Context Aware Ringer</string>
     <string name="done_string">Active:</string>
     <string name="reset_string">Reset</string>
     <string name="ringer_string">Ringer:</string>

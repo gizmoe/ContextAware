@@ -76,6 +76,8 @@ public class ContextListAdapter extends BaseAdapter {
 
             myViewHolder.titleView = (TextView) dataView.findViewById(R.id.titleView);
 
+            myViewHolder.locationView = (TextView) dataView.findViewById(R.id.LocationLabel);
+
             myViewHolder.statusView = (CheckBox) dataView.findViewById(R.id.statusCheckBox);
 
             myViewHolder.position = position;
@@ -86,8 +88,9 @@ public class ContextListAdapter extends BaseAdapter {
         ViewHolder storedViewHolder = (ViewHolder) dataView.getTag();
         // set the data in the data View
 
-        storedViewHolder.ringerView.setText("Ringer setting: " + currentContext.getRinger().toString());
+        storedViewHolder.ringerView.setText("Ringer will be set to: " + currentContext.getRinger().toString());
         storedViewHolder.titleView.setText(currentContext.getTitle());
+        storedViewHolder.locationView.setText("Location: " + currentContext.getLocation());
         storedViewHolder.statusView.setChecked(currentContext.getStatus() == ContextSettings.ActiveStatus.YES);
         storedViewHolder.statusView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

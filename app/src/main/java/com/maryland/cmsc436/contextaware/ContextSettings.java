@@ -14,17 +14,20 @@ public class ContextSettings {
     };
 
     public final static String TITLE = "title";
+    public final static String LOCATION = "location";
     public final static String RINGER = "ringer";
     public final static String ACTIVESTATUS = "status";
 
     // set the default title, ringer setting and status
     private String title = new String();
+    private String location = new String();
     private Ringer ringer = Ringer.VIBRATE;
     private ActiveStatus status = ActiveStatus.YES;
 
-    ContextSettings(String title, Ringer ringer, ActiveStatus status) {
+    ContextSettings(String title, Ringer ringer, String location, ActiveStatus status) {
         this.title = title;
         this.ringer = ringer;
+        this.location = location;
         this.status = status;
     }
 
@@ -32,6 +35,7 @@ public class ContextSettings {
     ContextSettings(Intent intent) {
         title = intent.getStringExtra(ContextSettings.TITLE);
         ringer = Ringer.valueOf(intent.getStringExtra(ContextSettings.RINGER));
+        location = intent.getStringExtra(ContextSettings.LOCATION);
         status = ActiveStatus.valueOf(intent.getStringExtra(ContextSettings.ACTIVESTATUS));
     }
 
@@ -41,6 +45,14 @@ public class ContextSettings {
 
     public void setTitle(String newTitle) {
         title = newTitle;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String newLocation) {
+        location = newLocation;
     }
 
     public Ringer getRinger() {
@@ -62,10 +74,11 @@ public class ContextSettings {
     // Take a set of String data values and
     // package them for transport in an Intent
     public static void packageIntent(Intent intent, String title,
-                                     Ringer ringer, ActiveStatus status) {
+                                     Ringer ringer, String location, ActiveStatus status) {
         intent.putExtra(ContextSettings.TITLE, title);
         intent.putExtra(ContextSettings.RINGER, ringer.toString());
         intent.putExtra(ContextSettings.ACTIVESTATUS, status.toString());
+        intent.putExtra(ContextSettings.LOCATION,location);
     }
 
     // Here I will create my own toString method

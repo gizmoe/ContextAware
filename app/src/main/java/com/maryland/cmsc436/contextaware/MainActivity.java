@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,16 +42,6 @@ public class MainActivity extends ListActivity {
 
         // Put divider between contexts and FooterView
         getListView().setFooterDividersEnabled(true);
-
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ContextSettings currentContext = (ContextSettings) adapterView.getItemAtPosition(i);
-
-                Intent addIntent = new Intent(getApplicationContext(),AddNewContext.class);
-                startActivity(addIntent);
-            }
-        });
 
         // make it TextView since that is what footer_view is in the XML
         // pass in null for the view root for now
@@ -89,6 +80,7 @@ public class MainActivity extends ListActivity {
         // Here I will check that the requestCode and the resultCode are what they should be
         if (requestCode == ADD_CONTEXT_REQUEST && resultCode == RESULT_OK) {
 
+            // make a toast message indicating the context was successfully created
             Toast.makeText(getApplicationContext(),"Context Created",Toast.LENGTH_LONG).show();
 
             // Create the context from the data Intent
@@ -96,6 +88,16 @@ public class MainActivity extends ListActivity {
 
             // Here I will add it to the adapter
             contextAdapter.add(newContext);
+
+            //getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+              //  @Override
+                //public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                  //  ContextSettings contextClicked = (ContextSettings) contextAdapter.getItem(i);
+
+                    //Intent addIntent = new Intent(getApplicationContext(),AddNewContext.class);
+                    //startActivity(addIntent);
+                //}
+            //});
         }
     }
 
@@ -122,9 +124,7 @@ public class MainActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
-        menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "Delete all");
-        menu.add(Menu.NONE, MENU_DUMP, Menu.NONE, "Dump to log");
+        menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "Delete all contexts");
         return true;
     }
 
@@ -159,13 +159,15 @@ public class MainActivity extends ListActivity {
 
             String title = null;
             String ringer = null;
+            String location = null;
             String status = null;
 
             while (null != (title = reader.readLine())) {
                 ringer = reader.readLine();
                 status = reader.readLine();
+                location = reader.readLine();
                 contextAdapter.add(new ContextSettings(title, ContextSettings.Ringer.valueOf(ringer),
-                        ContextSettings.ActiveStatus.valueOf(status)));
+                        location, ContextSettings.ActiveStatus.valueOf(status)));
             }
 
         } catch (FileNotFoundException e) {
@@ -204,4 +206,5 @@ public class MainActivity extends ListActivity {
             }
         }
     }
+
 }

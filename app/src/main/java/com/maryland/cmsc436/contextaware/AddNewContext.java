@@ -21,6 +21,7 @@ public class AddNewContext extends Activity {
     private RadioGroup ringerRadioGroup;
     private RadioGroup activeRadioGroup;
     private EditText TitleText;
+    private EditText LocationText;
     private RadioButton DefaultActiveButton;
     private RadioButton DefaultRingerButton;
 
@@ -30,6 +31,7 @@ public class AddNewContext extends Activity {
         setContentView(R.layout.add_new_context);
 
         TitleText = (EditText) findViewById(R.id.title);
+        LocationText = (EditText) findViewById(R.id.location);
         DefaultActiveButton = (RadioButton) findViewById(R.id.yes);
         DefaultRingerButton = (RadioButton) findViewById(R.id.vibrate);
         ringerRadioGroup = (RadioGroup) findViewById(R.id.ringerGroup);
@@ -55,6 +57,7 @@ public class AddNewContext extends Activity {
                 ringerRadioGroup.check(R.id.vibrate); // selects the ringer to the default "Vibrate"
                 activeRadioGroup.check(R.id.yes); // selects the active status to the default "Yes"
                 TitleText.setText(""); // clears the "Title" field to the default empty string
+                LocationText.setText(""); // clears the "Location" field to the default empty string
             }
         });
 
@@ -74,9 +77,12 @@ public class AddNewContext extends Activity {
                 // Save the ringer setting recorded by the user
                 Ringer currentRinger = getRinger();
 
+                // Save the location setting recorded by the user
+                String currentLocation = LocationText.getText().toString();
+
                 // package all of the info we just recorded into an intent
                 Intent recordedData = new Intent();
-                ContextSettings.packageIntent(recordedData,currentTitle,currentRinger,currentStatus);
+                ContextSettings.packageIntent(recordedData,currentTitle,currentRinger,currentLocation,currentStatus);
 
                 // setResult sets the resultCode to be RESULT_OK, which is what we want
                 setResult(RESULT_OK,recordedData);
