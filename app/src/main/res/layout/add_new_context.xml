@@ -62,10 +62,10 @@
             android:text="@string/vibrate_string" />
 
         <RadioButton
-            android:id="@+id/sound"
+            android:id="@+id/loud"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sound_string" />
+            android:text="@string/loud_string" />
     </RadioGroup>
 
     <!-- Active/Inactive -->
@@ -112,6 +112,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="@string/cancel_string" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/reset_string" />
 
     <Button
         android:id="@+id/submitButton"
