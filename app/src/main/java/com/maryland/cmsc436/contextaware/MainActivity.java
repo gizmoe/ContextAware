@@ -17,7 +17,8 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        contextAdapter = new ContextListAdapter(getApplicationContext());
 
         // Put divider between contexts and FooterView
         getListView().setFooterDividersEnabled(true);
@@ -47,6 +48,9 @@ public class MainActivity extends ListActivity {
                 startActivityForResult(addNewContextIntent, ADD_CONTEXT_REQUEST);
             }
         });
+
+        // This will attach the adapter to this ListActivity's ListView
+        setListAdapter(contextAdapter);
     }
 
     @Override
