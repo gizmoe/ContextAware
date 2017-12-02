@@ -37,26 +37,24 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         contextAdapter = new ContextListAdapter(getApplicationContext());
 
+        ListView listView = getListView();
+        registerForContextMenu(listView);
         // Put divider between contexts and FooterView
-        getListView().setFooterDividersEnabled(true);
+        listView.setFooterDividersEnabled(true);
 
         // make it TextView since that is what footer_view is in the XML
         // pass in null for the view root for now
-        TextView footerView = (TextView) getLayoutInflater().inflate(R.layout.footer_view,null);
-
+        final View footerView = (TextView) getLayoutInflater().inflate(R.layout.footer_view,null);
         // here I will add the footerView to the ListView using the addFooterView method
-        this.getListView().addFooterView(footerView);
+        listView.addFooterView(footerView);
 
         // Here we will attach a Listener to the FooterView
         footerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "entered the onClickListener for FooterView");
-
-
 				 //Here I will create an intent so that I can start my AddNewContext activity if the
 				 //FooterView is clicked.
 
@@ -88,16 +86,6 @@ public class MainActivity extends ListActivity {
 
             // Here I will add it to the adapter
             contextAdapter.add(newContext);
-
-            //getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-              //  @Override
-                //public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                  //  ContextSettings contextClicked = (ContextSettings) contextAdapter.getItem(i);
-
-                    //Intent addIntent = new Intent(getApplicationContext(),AddNewContext.class);
-                    //startActivity(addIntent);
-                //}
-            //});
         }
     }
 
@@ -206,5 +194,4 @@ public class MainActivity extends ListActivity {
             }
         }
     }
-
 }

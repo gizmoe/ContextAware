@@ -1,6 +1,7 @@
 package com.maryland.cmsc436.contextaware;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class ContextListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
 
         // First I will ge the context at the specified position
         final ContextSettings currentContext = (ContextSettings) getItem(position);
@@ -90,6 +92,12 @@ public class ContextListAdapter extends BaseAdapter {
 
         storedViewHolder.ringerView.setText("Ringer will be set to: " + currentContext.getRinger().toString());
         storedViewHolder.titleView.setText(currentContext.getTitle());
+        storedViewHolder.titleView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               Toast.makeText(parent.getContext(),"yo yo",Toast.LENGTH_LONG).show();
+            }
+        });
         storedViewHolder.locationView.setText("Location: " + currentContext.getLocation());
         storedViewHolder.statusView.setChecked(currentContext.getStatus() == ContextSettings.ActiveStatus.YES);
         storedViewHolder.statusView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
