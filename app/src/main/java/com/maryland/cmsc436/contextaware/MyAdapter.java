@@ -12,12 +12,12 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.CompoundButton;
 
-public class MyAdapter extends ArrayAdapter<Item> {
+public class MyAdapter extends ArrayAdapter<ContextSettings> {
 
     private final Context context;
-    private final ArrayList<Item> itemsArrayList;
+    private final ArrayList<ContextSettings> itemsArrayList;
 
-    public MyAdapter(Context context, ArrayList<Item> itemsArrayList) {
+    public MyAdapter(Context context, ArrayList<ContextSettings> itemsArrayList) {
 
         super(context, R.layout.row, itemsArrayList);
 
@@ -41,7 +41,7 @@ public class MyAdapter extends ArrayAdapter<Item> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // First I will ge the context at the specified position
-        final Item currentContext = (Item) getItem(position);
+        final ContextSettings currentContext = (ContextSettings) getItem(position);
 
         View dataView = convertView;
         LayoutInflater mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -77,9 +77,9 @@ public class MyAdapter extends ArrayAdapter<Item> {
 
                 // If it is checked, set the status to Active (or YES), otherwise set it to NO
                 if (b == true) {
-                    currentContext.setStatus(ContextSettings.ActiveStatus.YES);
+                    currentContext.setStatus("yes");
                 } else {
-                    currentContext.setStatus(ContextSettings.ActiveStatus.NO);
+                    currentContext.setStatus("no");
                 }
             }
         });

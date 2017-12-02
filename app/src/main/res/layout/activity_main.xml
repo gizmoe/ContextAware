@@ -26,14 +26,7 @@
         android:text="@string/done_string" >
     </TextView>
 
-    <CheckBox
-        android:id="@+id/statusCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="52dp"
-        android:layout_toRightOf="@+id/StatusLabel" >
-    </CheckBox>
+
 
     <TextView
         android:id="@+id/RingerLabel"
@@ -42,8 +35,7 @@
         android:layout_alignBaseline="@+id/statusCheckBox"
         android:layout_alignTop="@+id/StatusLabel"
         android:layout_toLeftOf="@+id/ringerView"
-        android:text="@string/ringer_string" >
-    </TextView>
+        android:text="@string/ringer_string"></TextView>
 
     <TextView
         android:id="@+id/ringerView"

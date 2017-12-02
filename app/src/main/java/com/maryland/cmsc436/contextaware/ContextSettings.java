@@ -47,25 +47,42 @@ public class ContextSettings {
         return ringer;
     }
 
-    public void setRinger(Ringer newRinger) {
-        ringer = newRinger;
+    public void setRinger(String newRinger) {
+        if (newRinger != null) {
+            newRinger = newRinger.toLowerCase();
+            if (newRinger.equals("silent"))
+                ringer = ContextSettings.Ringer.SILENT;
+            else if (newRinger.equals("vibrate"))
+                ringer = ContextSettings.Ringer.VIBRATE;
+            else
+                ringer = ContextSettings.Ringer.LOUD;
+        } else
+            ringer = ContextSettings.Ringer.SILENT;
     }
 
     public ActiveStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ActiveStatus newStatus) {
-        status = newStatus;
+    public void setStatus(String newStatus) {
+        if (newStatus != null) {
+            newStatus = newStatus.toLowerCase();
+            if (newStatus.equals("yes"))
+                status = ContextSettings.ActiveStatus.YES;
+            else
+                status = ContextSettings.ActiveStatus.NO;
+        } else
+            status = ContextSettings.ActiveStatus.NO;
     }
 
     // Take a set of String data values and
     // package them for transport in an Intent
     public static void packageIntent(Intent intent, String title,
-                                     Ringer ringer, ActiveStatus status) {
+                                     Ringer ringer, ActiveStatus status, Integer pos) {
         intent.putExtra(ContextSettings.TITLE, title);
         intent.putExtra(ContextSettings.RINGER, ringer.toString());
         intent.putExtra(ContextSettings.ACTIVESTATUS, status.toString());
+        intent.putExtra("pos", pos);
     }
 
     // Here I will create my own toString method
