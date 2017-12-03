@@ -39,6 +39,18 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         contextAdapter = new ContextListAdapter(getApplicationContext());
 
+        ListView contextListView = getListView();
+
+        contextListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i(TAG, "Entered the onItemClick");
+                ContextSettings context = (ContextSettings) contextAdapter.getItem(i);
+
+                Toast.makeText(getApplicationContext(),"Hiiiii", Toast.LENGTH_LONG).show();
+            }
+        });
+
         ListView listView = getListView();
         registerForContextMenu(listView);
         // Put divider between contexts and FooterView
