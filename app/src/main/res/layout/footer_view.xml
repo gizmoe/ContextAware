@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/footerView"
     android:layout_width="match_parent"
@@ -8,4 +7,5 @@
     android:text="@string/add_new_context_string"
     android:textSize="24sp"
     android:background="@color/Green">
+
 </TextView>
