@@ -150,6 +150,11 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	}
 
+	public void removeSetting(ContextSettings s) {
+		SQLiteDatabase db = getWritableDatabase();
+		db.delete(SETTING_TABLE, SETTING_TITLE + " = ?",new String[]{s.getTitle()});
+	}
+
     public void updateSetting(ContextSettings changedSettings) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues updates = new ContentValues();

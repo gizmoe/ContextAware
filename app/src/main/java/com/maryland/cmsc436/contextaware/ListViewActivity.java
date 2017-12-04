@@ -115,7 +115,7 @@ public class ListViewActivity extends Activity {
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listItems.remove(pos);
+                        db.removeSetting(listItems.remove(pos));
                         listView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                         dialog.dismiss();
@@ -172,7 +172,7 @@ public class ListViewActivity extends Activity {
             item.setLocation(location);
 
             // add this newly created context to the list
-            listItems.add(item);
+            //listItems.add(item);
             db.putNewSetting(item);
 
             listView.setAdapter(adapter);
@@ -215,6 +215,9 @@ public class ListViewActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_DELETE:
+                for (ContextSettings c : listItems) {
+                    db.removeSetting(c);
+                }
                 listItems.clear();
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
