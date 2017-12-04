@@ -185,4 +185,48 @@ public class DBAccess extends SQLiteOpenHelper {
 		db.update(SETTING_TABLE, updates, SETTING_TITLE + " = ?", new String[] { changedSettings.getTitle() });
     }
 
+    public ContextSettings getByLocation(String loc) {
+		SQLiteDatabase db = getReadableDatabase();
+
+		Cursor data = db.query(SETTING_TABLE
+				, new String[]{SETTING_TITLE,SETTING_ACTIVE,SETTING_RINGER}
+				, SETTING_LOC + " = ?"
+				, new String[]{loc}
+				, null, null, null);
+
+		if (data.moveToFirst()) {
+			ContextSettings.ActiveStatus stat;
+			ContextSettings.Ringer ringer;
+
+			String title = data.getString(data.getColumnIndex(SETTING_TITLE));
+
+			switch ( data.getInt(data.getColumnIndex(SETTING_ACTIVE)) ) {
+				case 1:
+					stat = ContextSettings.ActiveStatus.YES;
+					break;
+				default:
+					stat = ContextSettings.ActiveStatus.NO;
+					break;
+			}
+
+			switch ( data.getInt(data.getColumnIndex(SETTING_RINGER)) ) {
+				case 0:
+					ringer = ContextSettings.Ringer.SILENT;
+					break;
+				case 1:
+					ringer = ContextSettings.Ringer.VIBRATE;
+					break;
+				default:
+					ringer = ContextSettings.Ringer.LOUD;
+					break;
+			}
+
+			
+			return new ContextSettings(title, ringer, loc, stat);
+		} else {
+			return null;
+		}
+
+	}
+
 }
