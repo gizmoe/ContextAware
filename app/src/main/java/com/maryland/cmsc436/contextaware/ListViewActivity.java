@@ -109,7 +109,7 @@ public class ListViewActivity extends Activity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(ListViewActivity.this);
 
                 alert.setTitle("CAUTION");
-                alert.setMessage("Are you sure you want to delete this context?");
+                alert.setMessage("Do you want to delete this '" + listItems.get(pos).getTitle() + "' context?");
 
                 // If the user clicks "Yes" on the dialog
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
