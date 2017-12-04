@@ -14,15 +14,15 @@ import com.maryland.cmsc436.contextaware.ContextSettings.ActiveStatus;
 import com.maryland.cmsc436.contextaware.ContextSettings.Ringer;
 
 
-public class AddNewContext extends Activity {
+public class AddNewItem extends Activity {
 
     private static final String TAG = "ContextAware";
 
     private RadioGroup ringerRadioGroup;
     private RadioGroup activeRadioGroup;
     private EditText TitleText;
-    private RadioButton DefaultActiveButton;
-    private RadioButton DefaultRingerButton;
+    private EditText LocationText;
+    Integer pos;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -30,11 +30,36 @@ public class AddNewContext extends Activity {
         setContentView(R.layout.add_new_context);
 
         TitleText = (EditText) findViewById(R.id.title);
-        DefaultActiveButton = (RadioButton) findViewById(R.id.yes);
-        DefaultRingerButton = (RadioButton) findViewById(R.id.vibrate);
+        LocationText = (EditText) findViewById(R.id.location);
         ringerRadioGroup = (RadioGroup) findViewById(R.id.ringerGroup);
         activeRadioGroup = (RadioGroup) findViewById(R.id.statusGroup);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            Integer request = intent.getIntExtra("requestCode",1);
+            if (request==0) {
+                String title = intent.getStringExtra("title");
+                String ringer = intent.getStringExtra("ringer");
+                String status = intent.getStringExtra("status");
+                String location = intent.getStringExtra("location");
+                pos = intent.getIntExtra("pos", 0);
+                // populate the title field with the user entered title
+                TitleText.setText(title);
+                // populate the location field with the user entered location
+                LocationText.setText(location);
+                if (status.equals("NO"))
+                    activeRadioGroup.check(R.id.no);
+                else
+                    activeRadioGroup.check(R.id.yes);
+
+                if (ringer.equals("SILENT"))
+                    ringerRadioGroup.check(R.id.silent);
+                else if (ringer.equals("LOUD"))
+                    ringerRadioGroup.check(R.id.loud);
+                else
+                    ringerRadioGroup.check(R.id.vibrate);
+            }
+        }
 
         // OnClickListener for the Cancel Button,
         final Button cancelButton = (Button) findViewById(R.id.cancelButton);
@@ -55,6 +80,7 @@ public class AddNewContext extends Activity {
                 ringerRadioGroup.check(R.id.vibrate); // selects the ringer to the default "Vibrate"
                 activeRadioGroup.check(R.id.yes); // selects the active status to the default "Yes"
                 TitleText.setText(""); // clears the "Title" field to the default empty string
+                LocationText.setText(""); // clears the "Location" field to the default empty string
             }
         });
 
@@ -71,12 +97,17 @@ public class AddNewContext extends Activity {
                 // Save the title string recorded by the user
                 String currentTitle = TitleText.getText().toString();
 
+                String currentLocation = LocationText.getText().toString();
+
                 // Save the ringer setting recorded by the user
                 Ringer currentRinger = getRinger();
 
+                // Save the location setting recorded by the user
+                //String currentLocation = LocationText.getText().toString();
+
                 // package all of the info we just recorded into an intent
                 Intent recordedData = new Intent();
-                ContextSettings.packageIntent(recordedData,currentTitle,currentRinger,currentStatus);
+                ContextSettings.packageIntent(recordedData,currentTitle,currentRinger,currentLocation,currentStatus, pos);
 
                 // setResult sets the resultCode to be RESULT_OK, which is what we want
                 setResult(RESULT_OK,recordedData);

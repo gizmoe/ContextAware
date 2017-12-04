@@ -1,78 +1,54 @@
 package com.maryland.cmsc436.contextaware;
 
+import java.util.ArrayList;
+
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.CheckBox;
+import android.widget.RelativeLayout;
+import android.widget.CompoundButton;
 
-import java.util.ArrayList;
-import java.util.List;
+public class MyAdapter extends ArrayAdapter<ContextSettings> {
 
-public class ContextListAdapter extends BaseAdapter {
-    private final List<ContextSettings> contexts = new ArrayList<ContextSettings>();
-    private final Context mContext;
+    private final Context context;
+    private final ArrayList<ContextSettings> itemsArrayList;
 
-    private static final String TAG = "Lab-UserInterface";
+    public MyAdapter(Context context, ArrayList<ContextSettings> itemsArrayList) {
 
-    public ContextListAdapter(Context context) {
-        mContext = context;
+        super(context, R.layout.row, itemsArrayList);
+
+        this.context = context;
+        this.itemsArrayList = itemsArrayList;
     }
-
-    // Add a new context to the adapter
-    // Notify observers that the data set has changed
-
-    public void add(ContextSettings newContext) {
-        contexts.add(newContext);
-        notifyDataSetChanged();
-    }
-
-    // Clears the list adapter of all contexts.
-
-    public void clear() {
-        contexts.clear();
-        notifyDataSetChanged();
-    }
-
-    // Returns the number of contexts
 
     @Override
-    public int getCount() {
-        return contexts.size();
+    public boolean areAllItemsEnabled()
+    {
+        return true;
     }
 
-    // Retrieve the number of contexts
-
     @Override
-    public Object getItem(int pos) {
-        return contexts.get(pos);
-    }
-
-    // Get the ID for the context
-    // In this case it's just the position
-
-    @Override
-    public long getItemId(int pos) {
-        return pos;
+    public boolean isEnabled(int arg0)
+    {
+        return true;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // Sami's Code
-        // First I will ge the ToDoITem at the specified position
+        // First I will ge the context at the specified position
         final ContextSettings currentContext = (ContextSettings) getItem(position);
+
         View dataView = convertView;
-        LayoutInflater mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // check for recycled view
         if (null == dataView) {
             // not recycled, so we create the view here
-            dataView = mLayoutInflater.inflate(R.layout.activity_main,parent,false);
+            dataView = mLayoutInflater.inflate(R.layout.row,parent,false);
 
             // Create a viewHolder so that I can use the viewHolder pattern for easier scrolling
             ViewHolder myViewHolder = new ViewHolder();
@@ -81,6 +57,8 @@ public class ContextListAdapter extends BaseAdapter {
 
             myViewHolder.titleView = (TextView) dataView.findViewById(R.id.titleView);
 
+            myViewHolder.locationView = (TextView) dataView.findViewById(R.id.locationView);
+
             myViewHolder.statusView = (CheckBox) dataView.findViewById(R.id.statusCheckBox);
 
             myViewHolder.position = position;
@@ -88,28 +66,27 @@ public class ContextListAdapter extends BaseAdapter {
             dataView.setTag(myViewHolder);
         }
 
-
         ViewHolder storedViewHolder = (ViewHolder) dataView.getTag();
         // set the data in the data View
 
-        storedViewHolder.ringerView.setText(currentContext.getRinger().toString());
+        storedViewHolder.ringerView.setText("Ringer setting: " + currentContext.getRinger().toString());
         storedViewHolder.titleView.setText(currentContext.getTitle());
+        storedViewHolder.locationView.setText("Location: " + currentContext.getLocation());
         storedViewHolder.statusView.setChecked(currentContext.getStatus() == ContextSettings.ActiveStatus.YES);
         storedViewHolder.statusView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Log.i(TAG, "Entered the checker to make sure the checkbox is set properly");
+
 
                 // If it is checked, set the status to Active (or YES), otherwise set it to NO
                 if (b == true) {
-                    currentContext.setStatus(ContextSettings.ActiveStatus.YES);
+                    currentContext.setStatus("yes");
                 } else {
-                    currentContext.setStatus(ContextSettings.ActiveStatus.NO);
+                    currentContext.setStatus("no");
                 }
             }
         });
         return dataView;
-
     }
 
     static class ViewHolder {
@@ -118,5 +95,6 @@ public class ContextListAdapter extends BaseAdapter {
         TextView titleView;
         CheckBox statusView;
         TextView ringerView;
+        TextView locationView;
     }
 }
