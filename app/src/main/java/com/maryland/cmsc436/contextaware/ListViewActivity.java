@@ -190,6 +190,7 @@ public class ListViewActivity extends Activity {
 //        if (listItems.size() == 0) {
 //            loadItems();
 //        }
+        listItems.clear();
         listItems.addAll(db.getAllSettings());
 
     }
