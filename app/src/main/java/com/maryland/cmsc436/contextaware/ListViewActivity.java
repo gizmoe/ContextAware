@@ -50,6 +50,8 @@ public class ListViewActivity extends Activity {
     private static final int MENU_DELETE = Menu.FIRST;
     private static final String FILE_NAME = "ContextActivity.txt";
 
+    DBAccess db;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +136,8 @@ public class ListViewActivity extends Activity {
                return true;
             }
         });
+
+        db = DBAccess.getInstance(getApplicationContext());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,6 +155,7 @@ public class ListViewActivity extends Activity {
             item.setLocation(location);
 
             listItems.set(pos, item);
+            db.updateSetting(item);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         } else if (resultCode==RESULT_OK && requestCode==1) {
@@ -168,6 +173,8 @@ public class ListViewActivity extends Activity {
 
             // add this newly created context to the list
             listItems.add(item);
+            db.putNewSetting(item);
+
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             // make a toast to indicate to the user that a context was successfully created
@@ -180,9 +187,11 @@ public class ListViewActivity extends Activity {
         super.onResume();
 
         // Load saved ToDoItems, if necessary
-        if (listItems.size() == 0) {
-            loadItems();
-        }
+//        if (listItems.size() == 0) {
+//            loadItems();
+//        }
+        listItems.addAll(db.getAllSettings());
+
     }
 
     @Override
@@ -190,7 +199,8 @@ public class ListViewActivity extends Activity {
         super.onPause();
 
         // Save Contexts
-        saveItems();
+//        saveItems();
+        //db should be saving things as it gets them
 
     }
 

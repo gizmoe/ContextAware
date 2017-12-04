@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by kevin on 11/20/17.
  * This class will wrap calls to sqlite database to simplify database usage
- * 
+ * Current issues: supports having identical names, but currently can only edit one
  */
 
 public class DBAccess extends SQLiteOpenHelper {
@@ -21,9 +21,11 @@ public class DBAccess extends SQLiteOpenHelper {
 	private static final int DB_VERSION = 1;
 
 	private static final String SETTING_TABLE = "settings";
+	private static final String SETTING_KEY = "sid";
 	private static final String SETTING_TITLE = "title";
 	private static final String SETTING_RINGER = "ringer";	//0=SILENT, 1=VIBRATE, 2=RING
 	private static final String SETTING_ACTIVE = "enabled";	//0=DISABLED, 1=ENABLED
+	private static final String SETTING_LOC = "location";
 
 	private static final String LOC_TABLE = "locations";
 	private static final String LOC_ADDRESS = "address";
@@ -46,19 +48,21 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	public void onCreate(SQLiteDatabase db) {
 		String createSettingTables = "CREATE TABLE IF NOT EXISTS " + SETTING_TABLE + " ("
+				+ SETTING_KEY + " INTEGER PRIMARY KEY, "
 				+ SETTING_TITLE + " TEXT NOT NULL, "
 				+ SETTING_RINGER + " INTEGER, "
-				+ SETTING_ACTIVE + " INTEGER "
+				+ SETTING_ACTIVE + " INTEGER, "
+				+ SETTING_LOC + " TEXT"
 				+ ");";
-		String createLocTables = "CREATE TABLE IF NOT EXISTS" + LOC_TABLE + " ("
-				+ LOC_ADDRESS + " TEXT NOT NULL,"
-				+ LOC_LAT + " INTEGER, "
-				+ LOC_LONG + " INTEGER, "
-				+ LOC_SID + "INTEGER, "
-				+ "PRIMARY KEY (" + LOC_LAT + ", " + LOC_LONG + ") "
-				+ ");";
+//		String createLocTables = "CREATE TABLE IF NOT EXISTS" + LOC_TABLE + " ("
+//				+ LOC_ADDRESS + " TEXT NOT NULL,"
+//				+ LOC_LAT + " INTEGER, "
+//				+ LOC_LONG + " INTEGER, "
+//				+ LOC_SID + "INTEGER, "
+//				+ "PRIMARY KEY (" + LOC_LAT + ", " + LOC_LONG + ") "
+//				+ ");";
 
-		db.execSQL(createLocTables);
+		//db.execSQL(createLocTables);
 		db.execSQL(createSettingTables);
 
 	}
@@ -72,7 +76,7 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	//Information used to display in a list
 	public ArrayList<ContextSettings> getAllSettings() {
-		String[] cols = {SETTING_TITLE, SETTING_RINGER, SETTING_ACTIVE};
+		String[] cols = {SETTING_TITLE, SETTING_RINGER, SETTING_ACTIVE, SETTING_LOC};
 		ArrayList<ContextSettings> toReturn = new ArrayList<ContextSettings>();
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -82,6 +86,7 @@ public class DBAccess extends SQLiteOpenHelper {
 
 		while (data.isAfterLast() != true) {
 			String curTitle = data.getString(data.getColumnIndex(SETTING_TITLE));
+			String loc = data.getString(data.getColumnIndex(SETTING_LOC));
 			ContextSettings.ActiveStatus st;
 			ContextSettings.Ringer ring;
 
@@ -105,33 +110,45 @@ public class DBAccess extends SQLiteOpenHelper {
 					break;
 			}
 
-			toReturn.add(new ContextSettings(curTitle, ring, st));
+			toReturn.add(new ContextSettings( curTitle, ring, loc, st ));
 			data.moveToNext();
 		}
 
         return toReturn;
 	}
 
-	//Information to display in a list
-	public ArrayList getAllPlaces() {
-		String locSelect = "";
-
-        return null;
-	}
-
 	//All details on one setting
-	public Object getSettingAt() {
-		String oneSettingSelect = "";
+	public void putNewSetting(ContextSettings newContext) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues vals = new ContentValues();
 
-		return null;
+		switch (newContext.getRinger()) {
+			case SILENT:
+				vals.put(SETTING_RINGER, 0);
+				break;
+			case VIBRATE:
+				vals.put(SETTING_RINGER, 1);
+				break;
+			default: //case LOUD:
+				vals.put(SETTING_RINGER, 2);
+				break;
+		}
+
+		switch (newContext.getStatus()) {
+			case YES:
+				vals.put(SETTING_ACTIVE, 1);
+				break;
+			default: //case NO:
+				vals.put(SETTING_ACTIVE, 0);
+				break;
+		}
+
+		vals.put(SETTING_LOC,newContext.getLocation());
+		vals.put(SETTING_TITLE, newContext.getTitle());
+
+		db.insert(SETTING_TABLE, null, vals);
+
 	}
-
-	//All details on one "place"
-	public Object getPlaceAt() {
-		String onePlaceSelect = "";
-
-        return null;
-    }
 
     public void updateSetting(ContextSettings changedSettings) {
 		SQLiteDatabase db = getWritableDatabase();
@@ -158,12 +175,9 @@ public class DBAccess extends SQLiteOpenHelper {
 				break;
 		}
 
+		updates.put(SETTING_LOC,changedSettings.getLocation());
+
 		db.update(SETTING_TABLE, updates, SETTING_TITLE + " = ?", new String[] { changedSettings.getTitle() });
-    }
-
-    public void updatePlace() {
-		String locUpdate = "";
-
     }
 
 }
