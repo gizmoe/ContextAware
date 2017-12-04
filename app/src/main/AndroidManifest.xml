@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Context"/>
+        <activity android:name=".ContextManager"/>
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
