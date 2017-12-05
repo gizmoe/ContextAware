@@ -21,7 +21,6 @@ public class ListViewActivity extends Activity {
     EditText editText;
     Button addButton;
     ListView listView;
-    ArrayList<ContextSettings> listItems;
     MyAdapter adapter;
     String title, status, ringer;
     ContextSettings.Ringer cRinger;
@@ -38,11 +37,9 @@ public class ListViewActivity extends Activity {
         addButton = (Button) findViewById(R.id.addItem);
         listView = (ListView) findViewById(R.id.listView);
         listView.setClickable(true);
-        listItems = new ArrayList<ContextSettings>();
-        listItems.add(new ContextSettings("First Item", ContextSettings.Ringer.SILENT, ContextSettings.ActiveStatus.YES));
-        adapter = new MyAdapter(ListViewActivity.this, listItems);
+        adapter = new MyAdapter(ListViewActivity.this, new ArrayList<ContextSettings>());
+        adapter.add(new ContextSettings("First Item", ContextSettings.Ringer.SILENT, ContextSettings.ActiveStatus.YES));
         listView.setAdapter(adapter);
-
         addButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -86,12 +83,8 @@ public class ListViewActivity extends Activity {
             status = bundle.getString("status");
             Integer pos = bundle.getInt("pos");
 
-            item.setTitle(title);
-            item.setRinger(ringer);
-            item.setStatus(status);
-
-            listItems.set(pos, item);
-            listView.setAdapter(adapter);
+            ContextSettings newItem = new ContextSettings(title,ringer,status);
+            adapter.set(pos, newItem);
             adapter.notifyDataSetChanged();
         } else if (resultCode==RESULT_OK && requestCode==1) {
             Bundle bundle = data.getExtras();
@@ -99,13 +92,9 @@ public class ListViewActivity extends Activity {
             ringer = bundle.getString("ringer");
             status = bundle.getString("status");
 
-            item = new ContextSettings(title, ContextSettings.Ringer.SILENT, ContextSettings.ActiveStatus.YES);
-            item.setTitle(title);
-            item.setRinger(ringer);
-            item.setStatus(status);
+            ContextSettings newItem = new ContextSettings(title,ringer,status);
 
-            listItems.add(item);
-            listView.setAdapter(adapter);
+            adapter.add(newItem);
             adapter.notifyDataSetChanged();
         }
     }

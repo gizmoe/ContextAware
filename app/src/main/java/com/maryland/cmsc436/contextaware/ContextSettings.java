@@ -28,6 +28,25 @@ public class ContextSettings {
         this.status = status;
     }
 
+
+    ContextSettings(String title, String ringer, String status) {
+        this.title = title;
+        ringer = ringer.toLowerCase();
+        if (ringer.equals("silent"))
+            this.ringer = ContextSettings.Ringer.SILENT;
+        else if (ringer.equals("vibrate"))
+            this.ringer = ContextSettings.Ringer.VIBRATE;
+        else
+            this.ringer = ContextSettings.Ringer.LOUD;
+
+        status = status.toLowerCase();
+        if (status.equals("yes"))
+            this.status = ContextSettings.ActiveStatus.YES;
+        else
+            this.status = ContextSettings.ActiveStatus.NO;
+    }
+
+
     // Create a new Context from data packaged in an Intent
     ContextSettings(Intent intent) {
         title = intent.getStringExtra(ContextSettings.TITLE);

@@ -36,6 +36,7 @@ public class AddNewItem extends Activity {
         Intent intent = getIntent();
         if (intent != null) {
             Integer request = intent.getIntExtra("requestCode",1);
+            Log.i(TAG,request.toString());
             if (request==0) {
                 String title = intent.getStringExtra("title");
                 String ringer = intent.getStringExtra("ringer");
