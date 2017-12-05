@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">ContextAware</string>
+    <string name="app_name">Context Aware Ringer</string>
+    <string name="done_string">Active:</string>
+    <string name="reset_string">Reset</string>
+    <string name="ringer_string">Ringer:</string>
+    <string name="date_string">Date:</string>
+    <string name="add_new_context_string">Add New Context</string>
+    <string name="title_string">Title</string>
+    <string name="location_string">Location</string>
+    <string name="status_string">Would you like to activate this context?</string>
+    <string name="not_done_string">Not Done</string>
+    <string name="silent_string">Silent</string>
+    <string name="vibrate_string">Vibrate</string>
+    <string name="loud_string">Loud</string>
+    <string name="cancel_string">Cancel</string>
+    <string name="yes_string">Yes</string>
+    <string name="no_string">No</string>
+    <string name="submit_string">Submit</string>
+    <string name="enter_title_string">Enter Title</string>
+    <string name="enter_location_string">Enter Address Here</string>
 </resources>
