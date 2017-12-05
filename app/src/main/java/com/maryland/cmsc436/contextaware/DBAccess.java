@@ -31,6 +31,8 @@ public class DBAccess extends SQLiteOpenHelper {
 	private static final String HIDDEN_ID = "hid";
 	private static final String HIDDEN_RINGER = "ringer";
 
+	private static final int PREV_RINGER = 1;
+
 	//Factory method to get the object
 	public static DBAccess getInstance(Context context) {
 		if (singleton == null) {
@@ -60,7 +62,7 @@ public class DBAccess extends SQLiteOpenHelper {
 		db.execSQL(createHiddenTables);
 
 		ContentValues firstEntry = new ContentValues();
-		firstEntry.put(HIDDEN_ID, 1);
+		firstEntry.put(HIDDEN_ID, PREV_RINGER);
 		firstEntry.put(HIDDEN_RINGER, 0);
 
 		db.insert(createHiddenTables, null, firstEntry);
@@ -240,7 +242,10 @@ public class DBAccess extends SQLiteOpenHelper {
 				fields.put(HIDDEN_RINGER, 0);
 				break;
 		}
-		db.update(HIDDEN_TABLE,fields, HIDDEN_ID + " = ?", new String[]{"1"});
+		db.update(HIDDEN_TABLE
+				, fields
+				, HIDDEN_ID + " = ?"
+				, new String[]{String.valueOf(PREV_RINGER)});
 
 	}
 	public ContextSettings.Ringer getOldSetting() {
@@ -248,8 +253,9 @@ public class DBAccess extends SQLiteOpenHelper {
 		Cursor data = db.query(HIDDEN_TABLE
 				, new String[]{HIDDEN_RINGER}
 				, HIDDEN_ID + " = ?"
-				, new String[]{"1"}
+				, new String[]{String.valueOf(PREV_RINGER)}
 				, null, null,null);
+
 		if (data.moveToFirst()) {
 			switch ( data.getInt(data.getColumnIndex(HIDDEN_RINGER)) ) {
 				case 2:
