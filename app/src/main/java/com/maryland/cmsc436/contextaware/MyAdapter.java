@@ -18,12 +18,14 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
     Context context;
     ArrayList<ContextSettings> itemsArrayList;
     private static LayoutInflater inflater = null;
+    private final DBAccess db;
 
 
     public MyAdapter(Context context, ArrayList<ContextSettings> itemsArrayList) {
         super(context, R.layout.row, itemsArrayList);
         this.context = context;
         this.itemsArrayList = itemsArrayList;
+        db = DBAccess.getInstance(context);
     }
 
     @Override
@@ -84,8 +86,10 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
                 // If it is checked, set the status to Active (or YES), otherwise set it to NO
                 if (b == true) {
                     itemsArrayList.get(position).setStatus("yes");
+                    db.updateSetting(itemsArrayList.get(position));
                 } else {
                     itemsArrayList.get(position).setStatus("no");
+                    db.updateSetting(itemsArrayList.get(position));
                 }
             }
         });
