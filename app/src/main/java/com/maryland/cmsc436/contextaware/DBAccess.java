@@ -53,7 +53,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				+ SETTING_ACTIVE + " INTEGER, "
 				+ SETTING_LOC + " TEXT"
 				+ ");";
-		String createHiddenTables = "CREATE TABLE IF NOT EXISTS" + HIDDEN_TABLE + " ("
+		String createHiddenTables = "CREATE TABLE IF NOT EXISTS " + HIDDEN_TABLE + " ("
 				+ HIDDEN_ID + " INTEGER PRIMARY KEY,"
 				+ HIDDEN_RINGER + " INTEGER"
 				+ ");";
