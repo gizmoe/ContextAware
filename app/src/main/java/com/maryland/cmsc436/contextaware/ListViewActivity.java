@@ -165,11 +165,15 @@ public class ListViewActivity extends Activity {
             status = bundle.getString("status");
             location = bundle.getString("location");
 
+            
+
             item = new ContextSettings(title, ContextSettings.Ringer.SILENT, location, ContextSettings.ActiveStatus.YES);
             item.setTitle(title);
             item.setRinger(ringer);
             item.setStatus(status);
             item.setLocation(location);
+
+            //Toast.makeText(getApplication(),ringer,Toast.LENGTH_LONG).show();
 
             // add this newly created context to the list
             //listItems.add(item);
@@ -192,7 +196,6 @@ public class ListViewActivity extends Activity {
 //        }
         listItems.clear();
         listItems.addAll(db.getAllSettings());
-
     }
 
     @Override
