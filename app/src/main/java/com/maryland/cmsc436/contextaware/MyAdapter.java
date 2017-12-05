@@ -85,18 +85,11 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 // If it is checked, set the status to Active (or YES), otherwise set it to NO
                 if (b == true) {
-<<<<<<< HEAD
                     itemsArrayList.get(position).setStatus("yes");
+                    db.updateSetting(itemsArrayList.get(position));
                 } else {
                     itemsArrayList.get(position).setStatus("no");
-=======
-                    currentContext.setStatus("yes");
-                    db.updateSetting(currentContext);
-
-                } else {
-                    currentContext.setStatus("no");
-                    db.updateSetting(currentContext);
->>>>>>> sqliteStuff
+                    db.updateSetting(itemsArrayList.get(position));
                 }
             }
         });
