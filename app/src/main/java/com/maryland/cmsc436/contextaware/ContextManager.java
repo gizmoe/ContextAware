@@ -40,10 +40,12 @@ public class ContextManager {
     private List<Fence> contexts = new ArrayList<Fence>();
     private Activity mActivity;
     private Context mContext;
+    private DBAccess db;
 
-    public ContextManager(Activity mActivity){
+    public ContextManager(Activity mActivity, DBAccess db){
         this.mActivity = mActivity;
         this.mContext = mActivity.getApplicationContext();
+        this.db = db;
         configureGoogleAPIs();
         configureLocationListener();
         context = new GeoApiContext.Builder()
@@ -135,7 +137,7 @@ public class ContextManager {
             return;
         }
 
-        Fence newFence = new Fence(address, title, lat,lng, 100.0, ringer);
+        Fence newFence = new Fence(address, title, lat,lng, 0.05, ringer);
         contexts.add(newFence);
         Log.i(TAG, "Created New Fence");
     }

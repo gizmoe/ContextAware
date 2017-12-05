@@ -107,4 +107,6 @@ public class ContextSettings {
         return "Title:" + title + ITEM_SEP + "Ringer:" + ringer
                 + ITEM_SEP + "Active Status:" + status + "\n";
     }
+
+
 }

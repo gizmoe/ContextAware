@@ -136,7 +136,7 @@ public class ListViewActivity extends Activity {
         });
 
         db = DBAccess.getInstance(getApplicationContext());
-        contextManager = new ContextManager(this);
+        contextManager = new ContextManager(this, db);
 
     }
 
