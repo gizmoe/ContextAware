@@ -105,7 +105,9 @@ public class ListViewActivity extends Activity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(ListViewActivity.this);
 
                 alert.setTitle("CAUTION");
+                
                 alert.setMessage("Do you want to delete this '" + listItems.get(pos).getTitle() + "' context?");
+
 
                 // If the user clicks "Yes" on the dialog
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -164,11 +166,15 @@ public class ListViewActivity extends Activity {
             status = bundle.getString("status");
             location = bundle.getString("location");
 
+            
+
             item = new ContextSettings(title, ContextSettings.Ringer.SILENT, location, ContextSettings.ActiveStatus.YES);
             item.setTitle(title);
             item.setRinger(ringer);
             item.setStatus(status);
             item.setLocation(location);
+
+            //Toast.makeText(getApplication(),ringer,Toast.LENGTH_LONG).show();
 
             // add this newly created context to the list
             //listItems.add(item);
@@ -207,8 +213,8 @@ public class ListViewActivity extends Activity {
 //        if (listItems.size() == 0) {
 //            loadItems();
 //        }
+        listItems.clear();
         listItems.addAll(db.getAllSettings());
-
     }
 
     @Override
