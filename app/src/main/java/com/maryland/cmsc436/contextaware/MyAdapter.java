@@ -16,6 +16,7 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
 
     private final Context context;
     private final ArrayList<ContextSettings> itemsArrayList;
+    private final DBAccess db;
 
     public MyAdapter(Context context, ArrayList<ContextSettings> itemsArrayList) {
 
@@ -23,6 +24,7 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
 
         this.context = context;
         this.itemsArrayList = itemsArrayList;
+        db = DBAccess.getInstance(context);
     }
 
     @Override
@@ -81,8 +83,11 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
                 // If it is checked, set the status to Active (or YES), otherwise set it to NO
                 if (b == true) {
                     currentContext.setStatus("yes");
+                    db.updateSetting(currentContext);
+
                 } else {
                     currentContext.setStatus("no");
+                    db.updateSetting(currentContext);
                 }
             }
         });
