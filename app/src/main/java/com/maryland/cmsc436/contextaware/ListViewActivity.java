@@ -36,7 +36,6 @@ public class ListViewActivity extends Activity {
     EditText editText;
     Button addButton;
     ListView listView;
-    ArrayList<ContextSettings> listItems;
     MyAdapter adapter;
     String title, status, ringer, location;
     ContextSettings.Ringer cRinger;
@@ -59,11 +58,8 @@ public class ListViewActivity extends Activity {
         addButton = (Button) findViewById(R.id.addItem);
         listView = (ListView) findViewById(R.id.listView);
         listView.setClickable(true);
-        listItems = new ArrayList<ContextSettings>();
-        //listItems.add(new ContextSettings("First Item", ContextSettings.Ringer.SILENT, ContextSettings.ActiveStatus.YES));
-        adapter = new MyAdapter(ListViewActivity.this, listItems);
+        adapter = new MyAdapter(ListViewActivity.this, new ArrayList<ContextSettings>());
         listView.setAdapter(adapter);
-
         addButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -110,14 +106,14 @@ public class ListViewActivity extends Activity {
 
                 alert.setTitle("CAUTION");
                 
-                alert.setMessage("Do you want to delete this '" + listItems.get(pos).getTitle() + "' context?");
+                alert.setMessage("Do you want to delete this '" + adapter.getItem(pos).getTitle() + "' context?");
 
 
                 // If the user clicks "Yes" on the dialog
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.removeSetting(listItems.remove(pos));
+                        db.removeSetting(adapter.remove(pos));
                         listView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                         dialog.dismiss();
@@ -151,14 +147,10 @@ public class ListViewActivity extends Activity {
             location = bundle.getString("location");
             Integer pos = bundle.getInt("pos");
 
-            item.setTitle(title);
-            item.setRinger(ringer);
-            item.setStatus(status);
-            item.setLocation(location);
+            ContextSettings newItem = new ContextSettings(title,ringer,location,status);
 
-            listItems.set(pos, item);
-            db.updateSetting(item);
-            listView.setAdapter(adapter);
+            adapter.set(pos, newItem);
+            db.updateSetting(newItem);
             adapter.notifyDataSetChanged();
         } else if (resultCode==RESULT_OK && requestCode==1) {
             Bundle bundle = data.getExtras();
@@ -167,21 +159,12 @@ public class ListViewActivity extends Activity {
             status = bundle.getString("status");
             location = bundle.getString("location");
 
-            
-
-            item = new ContextSettings(title, ContextSettings.Ringer.SILENT, location, ContextSettings.ActiveStatus.YES);
-            item.setTitle(title);
-            item.setRinger(ringer);
-            item.setStatus(status);
-            item.setLocation(location);
-
+            ContextSettings newItem = new ContextSettings(title,ringer,location,status);
             //Toast.makeText(getApplication(),ringer,Toast.LENGTH_LONG).show();
 
             // add this newly created context to the list
-            //listItems.add(item);
-            db.putNewSetting(item);
-
-            listView.setAdapter(adapter);
+            adapter.add(newItem);
+            db.putNewSetting(newItem);
             adapter.notifyDataSetChanged();
             // make a toast to indicate to the user that a context was successfully created
             Toast.makeText(getApplicationContext(),"Context Created",Toast.LENGTH_LONG).show();
@@ -190,23 +173,18 @@ public class ListViewActivity extends Activity {
 
     @Override
     public void onResume() {
+        //should save here
         super.onResume();
-
-        // Load saved ToDoItems, if necessary
-//        if (listItems.size() == 0) {
-//            loadItems();
-//        }
-        listItems.clear();
-        listItems.addAll(db.getAllSettings());
+        adapter.clear();
+        adapter.addAll(db.getAllSettings());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i(TAG,"saved");
+        //should load here
 
-        // Save Contexts
-//        saveItems();
-        //db should be saving things as it gets them
 
     }
 
@@ -221,10 +199,10 @@ public class ListViewActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_DELETE:
-                for (ContextSettings c : listItems) {
+                for (ContextSettings c : adapter.itemsArrayList) {
                     db.removeSetting(c);
                 }
-                listItems.clear();
+                adapter.clear();
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 return true;
@@ -232,64 +210,4 @@ public class ListViewActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    // Load stored Contexts
-    private void loadItems() {
-        BufferedReader reader = null;
-        try {
-            FileInputStream fis = openFileInput(FILE_NAME);
-            reader = new BufferedReader(new InputStreamReader(fis));
-
-            String title = null;
-            String ringer = null;
-            String location = null;
-            String status = null;
-
-            while (null != (title = reader.readLine())) {
-                ringer = reader.readLine();
-                status = reader.readLine();
-                location = reader.readLine();
-                //Toast.makeText(getApplicationContext(),location,Toast.LENGTH_LONG).show();
-                //ContextSettings newItem = reader.readLine();
-                listItems.add(new ContextSettings(title, ContextSettings.Ringer.valueOf(ringer),
-                        location, ContextSettings.ActiveStatus.valueOf(status)));
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }  finally {
-            if (null != reader) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    // Save Contexts to file
-    private void saveItems() {
-        PrintWriter writer = null;
-        try {
-            FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                    fos)));
-
-            for (int idx = 0; idx < listItems.size(); idx++) {
-
-                writer.println(listItems.get(idx));
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (null != writer) {
-                writer.close();
-            }
-        }
-    }
-
 }
