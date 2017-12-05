@@ -27,12 +27,11 @@ public class DBAccess extends SQLiteOpenHelper {
 	private static final String SETTING_ACTIVE = "enabled";	//0=DISABLED, 1=ENABLED
 	private static final String SETTING_LOC = "location";
 
-	private static final String LOC_TABLE = "locations";
-	private static final String LOC_ADDRESS = "address";
-	private static final String LOC_LAT = "latitude";
-	private static final String LOC_LONG = "longitude";
-	private static final String LOC_SID = "sid";
+	private static final String HIDDEN_TABLE = "hidden";
+	private static final String HIDDEN_ID = "hid";
+	private static final String HIDDEN_RINGER = "ringer";
 
+	private static final int PREV_RINGER = 1;
 
 	//Factory method to get the object
 	public static DBAccess getInstance(Context context) {
@@ -54,21 +53,23 @@ public class DBAccess extends SQLiteOpenHelper {
 				+ SETTING_ACTIVE + " INTEGER, "
 				+ SETTING_LOC + " TEXT"
 				+ ");";
-//		String createLocTables = "CREATE TABLE IF NOT EXISTS" + LOC_TABLE + " ("
-//				+ LOC_ADDRESS + " TEXT NOT NULL,"
-//				+ LOC_LAT + " INTEGER, "
-//				+ LOC_LONG + " INTEGER, "
-//				+ LOC_SID + "INTEGER, "
-//				+ "PRIMARY KEY (" + LOC_LAT + ", " + LOC_LONG + ") "
-//				+ ");";
+		String createHiddenTables = "CREATE TABLE IF NOT EXISTS" + HIDDEN_TABLE + " ("
+				+ HIDDEN_ID + " INTEGER PRIMARY KEY,"
+				+ HIDDEN_RINGER + " INTEGER"
+				+ ");";
 
-		//db.execSQL(createLocTables);
 		db.execSQL(createSettingTables);
+		db.execSQL(createHiddenTables);
 
+		ContentValues firstEntry = new ContentValues();
+		firstEntry.put(HIDDEN_ID, PREV_RINGER);
+		firstEntry.put(HIDDEN_RINGER, 0);
+
+		db.insert(createHiddenTables, null, firstEntry);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVer, int newVer) {
 		db.execSQL("DROP TABLE IF EXISTS " + SETTING_TABLE + ";");
-		db.execSQL("DROP TABLE IF EXISTS " + LOC_TABLE + ";");
+		db.execSQL("DROP TABLE IF EXISTS " + HIDDEN_TABLE + ";");
 
 		onCreate(db);
 	}
@@ -184,5 +185,90 @@ public class DBAccess extends SQLiteOpenHelper {
 
 		db.update(SETTING_TABLE, updates, SETTING_TITLE + " = ?", new String[] { changedSettings.getTitle() });
     }
+
+    public ContextSettings getByLocation(String loc) {
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor data = db.query(SETTING_TABLE
+				, new String[]{SETTING_TITLE,SETTING_ACTIVE,SETTING_RINGER}
+				, SETTING_LOC + " = ?"
+				, new String[]{loc}
+				, null, null, null);
+
+		if (data.moveToFirst()) {
+			ContextSettings.ActiveStatus stat;
+			ContextSettings.Ringer ringer;
+
+			String title = data.getString(data.getColumnIndex(SETTING_TITLE));
+
+			switch ( data.getInt(data.getColumnIndex(SETTING_ACTIVE)) ) {
+				case 1:
+					stat = ContextSettings.ActiveStatus.YES;
+					break;
+				default:
+					stat = ContextSettings.ActiveStatus.NO;
+					break;
+			}
+
+			switch ( data.getInt(data.getColumnIndex(SETTING_RINGER)) ) {
+				case 0:
+					ringer = ContextSettings.Ringer.SILENT;
+					break;
+				case 1:
+					ringer = ContextSettings.Ringer.VIBRATE;
+					break;
+				default:
+					ringer = ContextSettings.Ringer.LOUD;
+					break;
+			}
+
+			return new ContextSettings(title, ringer, loc, stat);
+		} else {
+			return null;
+		}
+	}
+
+	public void saveOldSetting(ContextSettings.Ringer setting) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues fields = new ContentValues();
+
+		switch (setting) {
+			case LOUD:
+				fields.put(HIDDEN_RINGER, 2);
+				break;
+			case VIBRATE:
+				fields.put(HIDDEN_RINGER, 1);
+				break;
+			default:
+				fields.put(HIDDEN_RINGER, 0);
+				break;
+		}
+		db.update(HIDDEN_TABLE
+				, fields
+				, HIDDEN_ID + " = ?"
+				, new String[]{String.valueOf(PREV_RINGER)});
+
+	}
+	public ContextSettings.Ringer getOldSetting() {
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor data = db.query(HIDDEN_TABLE
+				, new String[]{HIDDEN_RINGER}
+				, HIDDEN_ID + " = ?"
+				, new String[]{String.valueOf(PREV_RINGER)}
+				, null, null,null);
+
+		if (data.moveToFirst()) {
+			switch ( data.getInt(data.getColumnIndex(HIDDEN_RINGER)) ) {
+				case 2:
+					return ContextSettings.Ringer.LOUD;
+				case 1:
+					return ContextSettings.Ringer.VIBRATE;
+				default:
+					return ContextSettings.Ringer.SILENT;
+
+			}
+		} else {
+			return ContextSettings.Ringer.LOUD;	//shouldn't happen
+		}
+	}
 
 }
