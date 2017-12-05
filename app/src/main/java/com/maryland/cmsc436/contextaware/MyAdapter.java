@@ -58,7 +58,7 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         // First I will ge the context at the specified position
         final ContextSettings currentContext = (ContextSettings) getItem(position);
@@ -76,6 +76,17 @@ public class MyAdapter extends ArrayAdapter<ContextSettings> {
         CheckBox check = (CheckBox) dataView.findViewById(R.id.statusCheckBox);
         TextView ringer = (TextView) dataView.findViewById(R.id.ringerView);
         title.setText(itemsArrayList.get(position).getTitle());
+        check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                // If it is checked, set the status to Active (or YES), otherwise set it to NO
+                if (b == true) {
+                    itemsArrayList.get(position).setStatus("yes");
+                } else {
+                    itemsArrayList.get(position).setStatus("no");
+                }
+            }
+        });
         if (itemsArrayList.get(position).getStatus().toString().equals("YES"))
             check.setChecked(true);
         else
